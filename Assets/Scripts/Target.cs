@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +9,9 @@ public class Target : MonoBehaviour
         maxTorque = 10,
         xRange = 4,
         ySpawnPos = -6;
+    GameManager gameManager;
+    public int pointValue;
+    public ParticleSystem explosionParticle;
 
     void Start()
     {
@@ -20,6 +22,7 @@ public class Target : MonoBehaviour
             ForceMode.Impulse
         );
         transform.position = RandomSpawnPos();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     void Update()
@@ -32,7 +35,11 @@ public class Target : MonoBehaviour
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 if (hit.transform == transform)
+                {
                     Destroy(gameObject);
+                    Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
+                    gameManager.UpdateScore(pointValue);
+                }
             }
         }
     }
