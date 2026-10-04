@@ -27,6 +27,8 @@ public class Target : MonoBehaviour
 
     void Update()
     {
+        if (!gameManager.isGameActive)
+            return;
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             Debug.Log("Mouse was clicked");
@@ -37,7 +39,11 @@ public class Target : MonoBehaviour
                 if (hit.transform == transform)
                 {
                     Destroy(gameObject);
-                    Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
+                    Instantiate(
+                        explosionParticle,
+                        transform.position,
+                        explosionParticle.transform.rotation
+                    );
                     gameManager.UpdateScore(pointValue);
                 }
             }
@@ -53,6 +59,10 @@ public class Target : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("TargetDestroyZone"))
+        {
             Destroy(gameObject);
+            if (!gameObject.CompareTag("Bad"))
+                gameManager.GameOver();
+        }
     }
 }
